@@ -416,7 +416,7 @@ class AutoSizeTextFormField extends StatefulWidget {
   final void Function(bool)? onTextFits;
 
   /// Callback current font size
-  final void Function(bool)? onGetCurrentFontSize;
+  final void Function(double)? onGetCurrentFontSize;
 
   /// Creates a [AutoSizeTextFormField] widget.
   ///
@@ -545,6 +545,10 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
       var result = _calculateFontSize(size, style, maxLines);
       var fontSize = result[0] as double;
       var textFits = result[1] as bool;
+
+      if (widget.onGetCurrentFontSize != null) {
+        widget.onGetCurrentFontSize!(fontSize);
+      }
 
       if (widget.onTextFits != null) widget.onTextFits!(textFits);
 
