@@ -416,7 +416,7 @@ class AutoSizeTextFormField extends StatefulWidget {
   final void Function(bool)? onTextFits;
 
   /// Callback current font size
-  final void Function(bool)? currentFontSize;
+  final void Function(bool)? onGetCurrentFontSize;
 
   /// Creates a [AutoSizeTextFormField] widget.
   ///
@@ -481,7 +481,7 @@ class AutoSizeTextFormField extends StatefulWidget {
     this.minLines,
     this.minWidth,
     this.onTextFits,
-    this.currentFontSize,
+    this.onGetCurrentFontSize,
   })  : textSpan = null,
         smartDashesType = smartDashesType ??
             (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
