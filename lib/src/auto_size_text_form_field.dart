@@ -527,7 +527,7 @@ class AutoSizeTextFormField extends StatefulWidget {
 }
 
 class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
-  late double _textSpanWidth;
+  late double? _textSpanWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -593,7 +593,7 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
       width: widget.fullwidth
           ? double.infinity
           : math.max(fontSize,
-              _textSpanWidth * MediaQuery.of(context).textScaleFactor),
+              _textSpanWidth ?? 1 * MediaQuery.of(context).textScaleFactor),
       child: TextFormField(
         key: widget.textFieldKey,
         autovalidateMode: widget.autovalidateMode,
