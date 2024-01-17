@@ -532,18 +532,19 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, size) {
-      var defaultTextStyle = DefaultTextStyle.of(context);
+      final defaultTextStyle = DefaultTextStyle.of(context);
 
       var style = widget.style;
       if (widget.style == null || widget.style!.inherit) {
         style = defaultTextStyle.style.merge(widget.style);
       }
       if (style!.fontSize == null) {
-        style =
-            style.copyWith(fontSize: AutoSizeTextFormField._defaultFontSize);
+        style = style.copyWith(
+          fontSize: AutoSizeTextFormField._defaultFontSize,
+        );
       }
 
-      var maxLines = widget.maxLines ?? defaultTextStyle.maxLines;
+      final maxLines = widget.maxLines ?? defaultTextStyle.maxLines;
       _sanityCheck();
 
       List<dynamic>? result;
@@ -592,8 +593,10 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
     return Container(
       width: widget.fullwidth
           ? double.infinity
-          : math.max(fontSize,
-              _textSpanWidth ?? 1 * MediaQuery.of(context).textScaleFactor),
+          : math.max(
+              fontSize,
+              _textSpanWidth ?? 1 * MediaQuery.of(context).textScaleFactor,
+            ),
       child: TextFormField(
         key: widget.textFieldKey,
         autovalidateMode: widget.autovalidateMode,
@@ -647,23 +650,23 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
 
   List _calculateFontSize(
       BoxConstraints size, TextStyle? style, int? maxLines) {
-    var span = TextSpan(
+    final span = TextSpan(
       style: widget.textSpan?.style ?? style,
       text: widget.textSpan?.text ?? widget.data,
       children: widget.textSpan?.children,
       recognizer: widget.textSpan?.recognizer,
     );
 
-    var userScale = MediaQuery.textScaleFactorOf(context);
+    final userScale = MediaQuery.textScaleFactorOf(context);
 
     int left;
     int right;
 
-    var presetFontSizes = widget.presetFontSizes?.reversed.toList();
+    final presetFontSizes = widget.presetFontSizes?.reversed.toList();
     if (presetFontSizes == null) {
       num defaultFontSize =
           style!.fontSize!.clamp(widget.minFontSize, widget.maxFontSize);
-      var defaultScale = defaultFontSize * userScale / style.fontSize!;
+      final defaultScale = defaultFontSize * userScale / style.fontSize!;
       if (_checkTextFits(span, defaultScale, maxLines, size)) {
         return [defaultFontSize * userScale, true];
       }
@@ -675,9 +678,9 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
       right = presetFontSizes.length - 1;
     }
 
-    var lastValueFits = false;
+    bool lastValueFits = false;
     while (left <= right) {
-      var mid = (left + (right - left) / 2).toInt();
+      final mid = (left + (right - left) / 2).toInt();
       double scale;
       if (presetFontSizes == null) {
         scale = mid * userScale * widget.stepGranularity / style!.fontSize!;
@@ -709,9 +712,14 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
   }
 
   bool _checkTextFits(
-      TextSpan text, double scale, int? maxLines, BoxConstraints constraints) {
+    TextSpan text,
+    double scale,
+    int? maxLines,
+    BoxConstraints constraints,
+  ) {
     double constraintWidth = constraints.maxWidth;
     double constraintHeight = constraints.maxHeight;
+
     if (widget.decoration.contentPadding != null) {
       constraintWidth -= widget.decoration.contentPadding!.horizontal;
       constraintHeight -= widget.decoration.contentPadding!.vertical;
@@ -723,10 +731,11 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
       // Adds prefix and suffix text
       if (widget.decoration.prefixText != null)
         words.add(widget.decoration.prefixText);
+
       if (widget.decoration.suffixText != null)
         words.add(widget.decoration.suffixText);
 
-      var wordWrapTp = TextPainter(
+      final wordWrapTp = TextPainter(
         text: TextSpan(
           style: text.style,
           text: words.join('\n'),
@@ -755,7 +764,7 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
 
     if (word.length > 0) {
       // replace all \n with 'space with \n' to prevent dropping last character to new line
-      var textContents = text.text ?? '';
+      final textContents = text.text ?? '';
       word = textContents.replaceAll('\n', ' \n');
       // \n is 10, <space> is 32
       if (textContents.codeUnitAt(textContents.length - 1) != 10 &&
@@ -768,7 +777,7 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
     word += widget.decoration.prefixText ?? '';
     word += widget.decoration.suffixText ?? '';
 
-    var tp = TextPainter(
+    final tp = TextPainter(
       text: TextSpan(
         text: word,
         recognizer: text.recognizer,
@@ -787,7 +796,7 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
     tp.layout(maxWidth: constraintWidth);
     double _width = (widget.decoration.contentPadding != null)
         ? tp.width + widget.decoration.contentPadding!.horizontal
-        : tp.width;
+        : tp.width - 5;
 
     double _height = (widget.decoration.contentPadding != null)
         ? tp.height + widget.decoration.contentPadding!.vertical
