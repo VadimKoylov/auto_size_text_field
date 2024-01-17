@@ -418,6 +418,9 @@ class AutoSizeTextFormField extends StatefulWidget {
   /// Callback current font size
   final void Function(double)? onGetCurrentFontSize;
 
+  /// Enable resize
+  final bool enable;
+
   /// Creates a [AutoSizeTextFormField] widget.
   ///
   /// If the [style] argument is null, the text will use the style from the
@@ -482,6 +485,7 @@ class AutoSizeTextFormField extends StatefulWidget {
     this.minWidth,
     this.onTextFits,
     this.onGetCurrentFontSize,
+    this.enable = false,
   })  : textSpan = null,
         smartDashesType = smartDashesType ??
             (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
@@ -542,19 +546,30 @@ class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
       var maxLines = widget.maxLines ?? defaultTextStyle.maxLines;
       _sanityCheck();
 
-      var result = _calculateFontSize(size, style, maxLines);
-      var fontSize = result[0] as double;
-      var textFits = result[1] as bool;
+      List<dynamic>? result;
+      double? fontSize;
+      bool? textFits;
 
-      if (widget.onGetCurrentFontSize != null) {
+      if (widget.enable) {
+        result = _calculateFontSize(size, style, maxLines);
+        fontSize = result[0] as double;
+        textFits = result[1] as bool;
+      }
+
+      if (widget.onGetCurrentFontSize != null && fontSize != null) {
         widget.onGetCurrentFontSize!(fontSize);
       }
 
-      if (widget.onTextFits != null) widget.onTextFits!(textFits);
+      if (widget.onTextFits != null && textFits != null)
+        widget.onTextFits!(textFits);
 
       Widget textField;
-      textField = _buildTextField(fontSize, style, maxLines);
-      if (widget.overflowReplacement != null && !textFits) {
+      textField = _buildTextField(
+        fontSize ?? widget.minFontSize,
+        style,
+        maxLines,
+      );
+      if (widget.overflowReplacement != null && textFits != null && !textFits) {
         return widget.overflowReplacement!;
       } else {
         return textField;
