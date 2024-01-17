@@ -527,7 +527,7 @@ class AutoSizeTextFormField extends StatefulWidget {
 }
 
 class _AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
-  late double? _textSpanWidth;
+  double? _textSpanWidth;
 
   @override
   Widget build(BuildContext context) {
